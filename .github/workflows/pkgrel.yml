@@ -41,7 +41,7 @@ jobs:
           lld-13 lldb-13 llvm-13
           llvm-13-dev llvm-13-runtime llvm-13-tools
           gcc-11-multilib gcc-multilib
-          cargo debmake javahelper debhelper
+          cargo debmake javahelper debhelper lintian dh-acc
         version: 1.0
     
     - name: Checkout code
