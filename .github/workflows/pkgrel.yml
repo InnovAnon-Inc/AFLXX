@@ -41,7 +41,7 @@ jobs:
           lld-13 lldb-13 llvm-13
           llvm-13-dev llvm-13-runtime llvm-13-tools
           gcc-11-multilib gcc-multilib
-          cargo debhelper-compat debmake javahelper
+          cargo debmake javahelper
         version: 1.0
     
     - name: Checkout code
@@ -92,15 +92,15 @@ jobs:
         #path: afl-cov-${{ steps.tag_version.outputs.new_tag }}
         repository: vanhauser-thc/afl-cov
 
-#    - name: Create afl-cov Tarball
-#      working-directory: afl-cov-0.0
-#      run: |
-#        tar acpf                  \
-#        ../afl-cov-0.0.tar.gz     \
-#        --exclude-vcs             \
-#        --exclude-vcs-ignores     \
-#        .
-#
+    - name: Create afl-cov Tarball
+      working-directory: afl-cov-0.0
+      run: |
+        tar acpf                  \
+        ../afl-cov-0.0.tar.gz     \
+        --exclude-vcs             \
+        --exclude-vcs-ignores     \
+        .
+
 #    - name: Debianize afl-cov
 #      working-directory: afl-cov-0.0
 #      run: |
