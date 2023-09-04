@@ -129,12 +129,12 @@ jobs:
         --preserve-envvar NO_NYX                                \
         -b -i -uc -us
 
-#    - name: Install afl-cov
-#      run: |
-#        sudo apt install -y     \
-#        --no-install-recommends \
-#        ./afl-cov_0.0-1.1_amd64.deb
-#
+    - name: Install afl-cov
+      run: |
+        sudo apt install -y     \
+        --no-install-recommends \
+        ./afl-cov_0.0-1.1_amd64.deb
+
 #    - name: Checkout afl++
 #      uses: actions/checkout@v3
 #      with:
