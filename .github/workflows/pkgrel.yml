@@ -42,7 +42,7 @@ jobs:
           llvm-13-dev llvm-13-runtime llvm-13-tools
           gcc-11-multilib gcc-multilib
           cargo debmake javahelper debhelper lintian dh-acc
-        version: 1.0
+        version: 1.1
     
     - name: Checkout code
       uses: actions/checkout@v3
