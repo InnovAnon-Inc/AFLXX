@@ -34,7 +34,7 @@ jobs:
           clang-13 clang-tools-13 libc++1-13
           libc++-13-dev libc++abi1-13 libc++abi-13-dev
           libclang1-13 libclang-13-dev
-          libclang-common-13-dev libclang-rt-13-dev libclang-cpp13
+          libclang-common-13-dev libclang-cpp13
           libclang-cpp13-dev liblld-13
           liblld-13-dev liblldb-13 liblldb-13-dev
           libllvm13 libomp-13-dev libomp5-13
@@ -135,15 +135,14 @@ jobs:
         --no-install-recommends \
         ./afl-cov_0.0-1.1_amd64.deb
 
-#    - name: Checkout afl++
-#      uses: actions/checkout@v3
-#      with:
-#        fetch-depth: 1
-#        # TODO use version
-#        path: aflplusplus-0.0
-#        #path: aflplusplus-${{ steps.tag_version.outputs.new_tag }}
-#        repository: AFLPlusPlus/AFLPlusPlus
-#
+    - name: Checkout afl++
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+        path: aflplusplus-0.0
+        #path: aflplusplus-${{ steps.tag_version.outputs.new_tag }}
+        repository: AFLPlusPlus/AFLPlusPlus
+
 #    - name: Customize Source Package
 #      working-directory: aflplusplus-0.0
 #      run: |
