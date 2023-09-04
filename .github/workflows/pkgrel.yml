@@ -167,7 +167,7 @@ jobs:
       run: |
         echo override_dh_auto_build:     \
         |   tee -a debian/rules          \
-        &&  echo "\t\$(MAKE) distrib"    \
+        &&  echo "	\$(MAKE) distrib"    \
         |   tee -a debian/rules
 
         sed -i 's@gcj,@@' debian/control
