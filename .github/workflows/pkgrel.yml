@@ -111,24 +111,24 @@ jobs:
       run: |
         dch -n initial
 
-#    - name: Build afl-cov .deb
-#      working-directory: afl-cov-0.0
-#      run: |
-#        DEB_BUILD_OPTIONS=nocheck                      \
-#        debuild                                                 \
-#        --no-lintian                                            \
-#        --preserve-envvar AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES \
-#        --preserve-envvar AFL_SKIP_CPUFREQ                      \
-#        --preserve-envvar AFL_TRY_AFFINITY                      \
-#        --preserve-envvar CC                                    \
-#        --preserve-envvar CXX                                   \
-#        --preserve-envvar IS_DOCKER                             \
-#        --preserve-envvar LLVM_CONFIG                           \
-#        --preserve-envvar NO_ARCH_OPT                           \
-#        --preserve-envvar NO_CORESIGHT                          \
-#        --preserve-envvar NO_NYX                                \
-#        -b -i -uc -us
-#
+    - name: Build afl-cov .deb
+      working-directory: afl-cov-0.0
+      run: |
+        DEB_BUILD_OPTIONS=nocheck                               \
+        debuild                                                 \
+        --no-lintian                                            \
+        --preserve-envvar AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES \
+        --preserve-envvar AFL_SKIP_CPUFREQ                      \
+        --preserve-envvar AFL_TRY_AFFINITY                      \
+        --preserve-envvar CC                                    \
+        --preserve-envvar CXX                                   \
+        --preserve-envvar IS_DOCKER                             \
+        --preserve-envvar LLVM_CONFIG                           \
+        --preserve-envvar NO_ARCH_OPT                           \
+        --preserve-envvar NO_CORESIGHT                          \
+        --preserve-envvar NO_NYX                                \
+        -b -i -uc -us
+
 #    - name: Install afl-cov
 #      run: |
 #        sudo apt install -y     \
