@@ -41,7 +41,7 @@ jobs:
           lld-13 lldb-13 llvm-13
           llvm-13-dev llvm-13-runtime llvm-13-tools
           gcc-11-multilib gcc-multilib
-          cargo debmake javahelper
+          cargo debmake javahelper debhelper
         version: 1.0
     
     - name: Checkout code
@@ -148,72 +148,72 @@ jobs:
       run: |
         sed -i 's/^	-/	/g' GNUmakefile
 
-#    - name: Create aflplusplus Tarball
-#      working-directory: aflplusplus-0.0
-#    - run: |
-#        tar acpf                  \
-#        ../aflplusplus-0.0.tar.gz \
-#        --exclude-vcs             \
-#        --exclude-vcs-ignores     \
-#        .
+    - name: Create aflplusplus Tarball
+      working-directory: aflplusplus-0.0
+      run: |
+        tar acpf                  \
+        ../aflplusplus-0.0.tar.gz \
+        --exclude-vcs             \
+        --exclude-vcs-ignores     \
+        .
 
-#    - name: Debianize aflplusplus
-#      working-directory: aflplusplus-0.0
-#      run: |
-#        debmake
-#
-#    - name: Customize Source Package
-#      working-directory: aflplusplus-0.0
-#      run: |
-#        echo override_dh_auto_build:     \
-#        |   tee -a debian/rules          \
-#        &&  echo "\t\$(MAKE) distrib"    \
-#        |   tee -a debian/rules
-#
-#        sed -i 's@gcj,@@' debian/control
-#
-#        # TODO rename .deb package
-#        # TODO conflicts with original packages -- afl++/aflplusplus, etc.
-#
-#    - name: Run dch
-#      working-directory: aflplusplus-0.0
-#      run: |
-#        dch -n initial
-#
-#    - name: Build aflplusplus .deb
-#      working-directory: aflplusplus-0.0
-#      run: |
-#        DEB_BUILD_OPTIONS=nocheck                      \
-#        debuild                                                 \
-#        --no-lintian                                            \
-#        --preserve-envvar AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES \
-#        --preserve-envvar AFL_SKIP_CPUFREQ                      \
-#        --preserve-envvar AFL_TRY_AFFINITY                      \
-#        --preserve-envvar CC                                    \
-#        --preserve-envvar CXX                                   \
-#        --preserve-envvar IS_DOCKER                             \
-#        --preserve-envvar LLVM_CONFIG                           \
-#        --preserve-envvar NO_ARCH_OPT                           \
-#        --preserve-envvar NO_CORESIGHT                          \
-#        --preserve-envvar NO_NYX                                \
-#        -b -i -uc -us
-#
-#    # TODO
-#
-#    - name: Bump version and push tag
-#      id:   tag_version
-#      uses: mathieudutour/github-tag-action@v6.1
-#      with:
-#        github_token: ${{ secrets.GITHUB_TOKEN }}
-#
-#    - name: Release
-#      uses: softprops/action-gh-release@v1
-#      with:
-#        tag_name: ${{ steps.tag_version.outputs.new_tag }}
-#        fail_on_unmatched_files: true
-#        generate_release_notes: true
-#        files: |
-#          slapd_*.*.*+dfsg-*ubuntu*.*.*.*_amd64.deb
-#          libldap-*.*-*_*.*.*+dfsg-*ubuntu*.*.*.*_amd64.deb
-#          libldap-common_*.*.*+dfsg-*ubuntu*.*.*.*_all.deb
+    - name: Debianize aflplusplus
+      working-directory: aflplusplus-0.0
+      run: |
+        debmake
+
+    - name: Customize Source Package
+      working-directory: aflplusplus-0.0
+      run: |
+        echo override_dh_auto_build:     \
+        |   tee -a debian/rules          \
+        &&  echo "\t\$(MAKE) distrib"    \
+        |   tee -a debian/rules
+
+        sed -i 's@gcj,@@' debian/control
+
+        # TODO rename .deb package
+        # TODO conflicts with original packages -- afl++/aflplusplus, etc.
+
+    - name: Run dch
+      working-directory: aflplusplus-0.0
+      run: |
+        dch -n initial
+
+    - name: Build aflplusplus .deb
+      working-directory: aflplusplus-0.0
+      run: |
+        DEB_BUILD_OPTIONS=nocheck                      \
+        debuild                                                 \
+        --no-lintian                                            \
+        --preserve-envvar AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES \
+        --preserve-envvar AFL_SKIP_CPUFREQ                      \
+        --preserve-envvar AFL_TRY_AFFINITY                      \
+        --preserve-envvar CC                                    \
+        --preserve-envvar CXX                                   \
+        --preserve-envvar IS_DOCKER                             \
+        --preserve-envvar LLVM_CONFIG                           \
+        --preserve-envvar NO_ARCH_OPT                           \
+        --preserve-envvar NO_CORESIGHT                          \
+        --preserve-envvar NO_NYX                                \
+        -b -i -uc -us
+
+    # TODO
+
+    - name: Bump version and push tag
+      id:   tag_version
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        files: |
+          slapd_*.*.*+dfsg-*ubuntu*.*.*.*_amd64.deb
+          libldap-*.*-*_*.*.*+dfsg-*ubuntu*.*.*.*_amd64.deb
+          libldap-common_*.*.*+dfsg-*ubuntu*.*.*.*_all.deb
 
