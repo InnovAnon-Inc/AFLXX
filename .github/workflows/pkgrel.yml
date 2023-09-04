@@ -101,16 +101,16 @@ jobs:
         --exclude-vcs-ignores     \
         .
 
-#    - name: Debianize afl-cov
-#      working-directory: afl-cov-0.0
-#      run: |
-#        debmake
-#
-#    - name: Run dch
-#      working-directory: afl-cov-0.0
-#      run: |
-#        dch -n initial
-#
+    - name: Debianize afl-cov
+      working-directory: afl-cov-0.0
+      run: |
+        debmake
+
+    - name: Run dch
+      working-directory: afl-cov-0.0
+      run: |
+        dch -n initial
+
 #    - name: Build afl-cov .deb
 #      working-directory: afl-cov-0.0
 #      run: |
