@@ -111,7 +111,7 @@ jobs:
     - name: Customize Source Package
       working-directory: afl-cov-0.0
       run: |
-        sed -i 's@debhelper-compat,@@' debian/config
+        sed -i 's@debhelper-compat,@@' debian/control
 
     - name: Run dch
       working-directory: afl-cov-0.0
