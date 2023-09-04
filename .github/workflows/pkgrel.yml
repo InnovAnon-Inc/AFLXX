@@ -148,14 +148,14 @@ jobs:
       run: |
         sed -i 's/^	-/	/g' GNUmakefile
 
-    - name: Create aflplusplus Tarball
-      working-directory: aflplusplus-0.0
-    - run: |
-        tar acpf                  \
-        ../aflplusplus-0.0.tar.gz \
-        --exclude-vcs             \
-        --exclude-vcs-ignores     \
-        .
+#    - name: Create aflplusplus Tarball
+#      working-directory: aflplusplus-0.0
+#    - run: |
+#        tar acpf                  \
+#        ../aflplusplus-0.0.tar.gz \
+#        --exclude-vcs             \
+#        --exclude-vcs-ignores     \
+#        .
 
 #    - name: Debianize aflplusplus
 #      working-directory: aflplusplus-0.0
