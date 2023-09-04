@@ -55,29 +55,29 @@ jobs:
         sudo update-alternatives --install /usr/bin/g++         g++         /usr/bin/g++-${GCC_VERSION}          0
         sudo update-alternatives --install /usr/bin/clang       clang       /usr/bin/clang-${LLVM_VERSION}       0
         sudo update-alternatives --install /usr/bin/clang++     clang++     /usr/bin/clang++-${LLVM_VERSION}     0
-#
-#    - name: Configure Environment
-#      run: |
-#        echo NO_CORESIGHT=1 >> $GITHUB_ENV
-#        echo NO_NYX=1 >> $GITHUB_ENV
-#
-#        echo LLVM_VERSION=14 >> $GITHUB_ENV
-#        echo GCC_VERSION=11 >> $GITHUB_ENV
-#
-#        echo NO_ARCH_OPT=1 >> $GITHUB_ENV
-#        echo IS_DOCKER=1 >> $GITHUB_ENV
-#
-#        echo LLVM_CONFIG=llvm-config-${LLVM_VERSION} >> $GITHUB_ENV
-#        echo AFL_SKIP_CPUFREQ=1 >> $GITHUB_ENV
-#        echo AFL_TRY_AFFINITY=1 >> $GITHUB_ENV
-#        echo AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1 >> $GITHUB_ENV
-#
-#        echo CC=gcc-$GCC_VERSION >> $GITHUB_ENV
-#        echo CXX=g++-$GCC_VERSION >> $GITHUB_ENV
-#        echo PATH=/usr/lib/ccache:$PATH >> $GITHUB_ENV
-#
-#        echo TEST_BUILD >> $GITHUB_ENV
-#
+
+    - name: Configure Environment
+      run: |
+        echo NO_CORESIGHT=1 >> $GITHUB_ENV
+        echo NO_NYX=1 >> $GITHUB_ENV
+
+        echo LLVM_VERSION=14 >> $GITHUB_ENV
+        echo GCC_VERSION=11 >> $GITHUB_ENV
+
+        echo NO_ARCH_OPT=1 >> $GITHUB_ENV
+        echo IS_DOCKER=1 >> $GITHUB_ENV
+
+        echo LLVM_CONFIG=llvm-config-${LLVM_VERSION} >> $GITHUB_ENV
+        echo AFL_SKIP_CPUFREQ=1 >> $GITHUB_ENV
+        echo AFL_TRY_AFFINITY=1 >> $GITHUB_ENV
+        echo AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1 >> $GITHUB_ENV
+
+        echo CC=gcc-$GCC_VERSION >> $GITHUB_ENV
+        echo CXX=g++-$GCC_VERSION >> $GITHUB_ENV
+        echo PATH=/usr/lib/ccache:$PATH >> $GITHUB_ENV
+
+        echo TEST_BUILD >> $GITHUB_ENV
+
 #    #- name: Bump version and push tag
 #    #  id:   tag_version
 #    #  uses: mathieudutour/github-tag-action@v6.1
