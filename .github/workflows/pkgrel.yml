@@ -94,6 +94,11 @@ jobs:
         #path: afl-cov-${{ steps.tag_version.outputs.new_tag }}
         repository: vanhauser-thc/afl-cov
 
+    - name: Customize Source Package
+      working-directory: afl-cov-0.0
+      run: |
+        sed -i 's@debhelper-compat,@@' debian/config
+
     - name: Create afl-cov Tarball
       working-directory: afl-cov-0.0
       run: |
