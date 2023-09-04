@@ -51,10 +51,10 @@ jobs:
 
     - name: Update Alternatives
       run: |
-        sudo update-alternatives --install /usr/bin/gcc         gcc         /usr/bin/gcc-${GCC_VERSION}          0
-        sudo update-alternatives --install /usr/bin/g++         g++         /usr/bin/g++-${GCC_VERSION}          0
-        sudo update-alternatives --install /usr/bin/clang       clang       /usr/bin/clang-${LLVM_VERSION}       0
-        sudo update-alternatives --install /usr/bin/clang++     clang++     /usr/bin/clang++-${LLVM_VERSION}     0
+        sudo update-alternatives --install /usr/bin/gcc         gcc         /usr/bin/gcc-11          0
+        sudo update-alternatives --install /usr/bin/g++         g++         /usr/bin/g++-11          0
+        sudo update-alternatives --install /usr/bin/clang       clang       /usr/bin/clang-13       0
+        sudo update-alternatives --install /usr/bin/clang++     clang++     /usr/bin/clang++-13     0
 
     - name: Configure Environment
       run: |
@@ -143,10 +143,10 @@ jobs:
         #path: aflplusplus-${{ steps.tag_version.outputs.new_tag }}
         repository: AFLPlusPlus/AFLPlusPlus
 
-#    - name: Customize Source Package
-#      working-directory: aflplusplus-0.0
-#      run: |
-#        sed -i 's/^	-/	/g' GNUmakefile
+    - name: Customize Source Package
+      working-directory: aflplusplus-0.0
+      run: |
+        sed -i 's/^	-/	/g' GNUmakefile
 #
 #    - name: Create aflplusplus Tarball
 #      working-directory: aflplusplus-0.0
