@@ -78,21 +78,20 @@ jobs:
 
         echo TEST_BUILD >> $GITHUB_ENV
 
-#    #- name: Bump version and push tag
-#    #  id:   tag_version
-#    #  uses: mathieudutour/github-tag-action@v6.1
-#    #  with:
-#    #    github_token: ${{ secrets.GITHUB_TOKEN }}
-#
-#    - name: Checkout afl-cov
-#      uses: actions/checkout@v3
-#      with:
-#        fetch-depth: 1
-#        # TODO use version
-#        path: afl-cov-0.0
-#        #path: afl-cov-${{ steps.tag_version.outputs.new_tag }}
-#        repository: vanhauser-thc/afl-cov
-#
+    #- name: Bump version and push tag
+    #  id:   tag_version
+    #  uses: mathieudutour/github-tag-action@v6.1
+    #  with:
+    #    github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Checkout afl-cov
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+        path: afl-cov-0.0
+        #path: afl-cov-${{ steps.tag_version.outputs.new_tag }}
+        repository: vanhauser-thc/afl-cov
+
 #    - name: Create afl-cov Tarball
 #      working-directory: afl-cov-0.0
 #      run: |
