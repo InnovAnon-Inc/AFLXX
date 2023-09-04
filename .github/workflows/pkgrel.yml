@@ -151,8 +151,8 @@ jobs:
         sed -i 's/^	-/	/g' GNUmakefile
 
     - name: Create aflplusplus Tarball
-    - run: |
       working-directory: aflplusplus-0.0
+    - run: |
         tar acpf                  \
         ../aflplusplus-0.0.tar.gz \
         --exclude-vcs             \
