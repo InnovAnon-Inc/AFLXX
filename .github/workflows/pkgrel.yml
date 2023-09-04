@@ -1,0 +1,221 @@
+name: PostGreSQL-Enabled OpenLDAP
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
+  #[workflow_call]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+
+jobs:
+  build:
+    name: build package
+    runs-on: ubuntu-latest
+    steps:
+    - name: install build deps
+      uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: >
+          build-essential devscripts
+          dpkg-dev fakeroot groff
+          make cmake automake meson ninja-build bison flex cpio
+          git xz-utils bzip2 wget jupp nano bash-completion less vim joe ssh psmisc
+          python3 python3-dev python3-pip python-is-python3
+          libtool libtool-bin libglib2.0-dev
+          apt-transport-https gnupg dialog
+          gnuplot-nox libpixman-1-dev bc
+          gcc-11 g++-11 gcc-11-plugin-dev gdb lcov
+          clang-13 clang-tools-13 libc++1-13
+          libc++-13-dev libc++abi1-13 libc++abi-13-dev
+          libclang1-13 libclang-13-dev
+          libclang-common-13-dev libclang-rt-13-dev libclang-cpp13
+          libclang-cpp13-dev liblld-13
+          liblld-13-dev liblldb-13 liblldb-13-dev
+          libllvm13 libomp-13-dev libomp5-13
+          lld-13 lldb-13 llvm-13
+          llvm-13-dev llvm-13-runtime llvm-13-tools
+          gcc-11-multilib gcc-multilib
+          cargo debhelper-compat debmake javahelper
+        version: 1.0
+    
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        path: "repo"
+
+    - name: Update Alternatives
+      run: |
+        sudo update-alternatives --install /usr/bin/gcc         gcc         /usr/bin/gcc-${GCC_VERSION}          0
+        sudo update-alternatives --install /usr/bin/g++         g++         /usr/bin/g++-${GCC_VERSION}          0
+        sudo update-alternatives --install /usr/bin/clang       clang       /usr/bin/clang-${LLVM_VERSION}       0
+        sudo update-alternatives --install /usr/bin/clang++     clang++     /usr/bin/clang++-${LLVM_VERSION}     0
+
+    - name: Configure Environment
+      run: |
+        echo NO_CORESIGHT=1 >> $GITHUB_ENV
+        echo NO_NYX=1 >> $GITHUB_ENV
+
+        echo LLVM_VERSION=14 >> $GITHUB_ENV
+        echo GCC_VERSION=11 >> $GITHUB_ENV
+
+        echo NO_ARCH_OPT=1 >> $GITHUB_ENV
+        echo IS_DOCKER=1 >> $GITHUB_ENV
+
+        echo LLVM_CONFIG=llvm-config-${LLVM_VERSION} >> $GITHUB_ENV
+        echo AFL_SKIP_CPUFREQ=1 >> $GITHUB_ENV
+        echo AFL_TRY_AFFINITY=1 >> $GITHUB_ENV
+        echo AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1 >> $GITHUB_ENV
+
+        echo CC=gcc-$GCC_VERSION >> $GITHUB_ENV
+        echo CXX=g++-$GCC_VERSION >> $GITHUB_ENV
+        echo PATH=/usr/lib/ccache:$PATH >> $GITHUB_ENV
+
+        echo TEST_BUILD >> $GITHUB_ENV
+
+    #- name: Bump version and push tag
+    #  id:   tag_version
+    #  uses: mathieudutour/github-tag-action@v6.1
+    #  with:
+    #    github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Checkout afl-cov
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+        # TODO use version
+        path: afl-cov-0.0
+        #path: afl-cov-${{ steps.tag_version.outputs.new_tag }}
+        repository: vanhauser-thc/afl-cov
+
+    - name: Create afl-cov Tarball
+      working-directory: afl-cov-0.0
+      run: |
+        tar acpf                  \
+        ../afl-cov-0.0.tar.gz     \
+        --exclude-vcs             \
+        --exclude-vcs-ignores     \
+        .
+
+    - name: Debianize afl-cov
+      working-directory: afl-cov-0.0
+      run: |
+        debmake
+
+    - name: Run dch
+      working-directory: afl-cov-0.0
+      run: |
+        dch -n initial
+
+    - name: Build afl-cov .deb
+      working-directory: afl-cov-0.0
+      run: |
+        DEB_BUILD_OPTIONS=nocheck                      \
+        debuild                                                 \
+        --no-lintian                                            \
+        --preserve-envvar AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES \
+        --preserve-envvar AFL_SKIP_CPUFREQ                      \
+        --preserve-envvar AFL_TRY_AFFINITY                      \
+        --preserve-envvar CC                                    \
+        --preserve-envvar CXX                                   \
+        --preserve-envvar IS_DOCKER                             \
+        --preserve-envvar LLVM_CONFIG                           \
+        --preserve-envvar NO_ARCH_OPT                           \
+        --preserve-envvar NO_CORESIGHT                          \
+        --preserve-envvar NO_NYX                                \
+        -b -i -uc -us
+
+    - name: Install afl-cov
+      run: |
+        sudo apt install -y     \
+        --no-install-recommends \
+        ./afl-cov_0.0-1.1_amd64.deb
+
+    - name: Checkout afl++
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+        # TODO use version
+        path: aflplusplus-0.0
+        #path: aflplusplus-${{ steps.tag_version.outputs.new_tag }}
+        repository: AFLPlusPlus/AFLPlusPlus
+
+    - name: Customize Source Package
+      working-directory: aflplusplus-0.0
+      run: |
+        sed -i 's/^	-/	/g' GNUmakefile
+
+    - name: Create aflplusplus Tarball
+    - run: |
+      working-directory: aflplusplus-0.0
+        tar acpf                  \
+        ../aflplusplus-0.0.tar.gz \
+        --exclude-vcs             \
+        --exclude-vcs-ignores     \
+        .
+
+    - name: Debianize aflplusplus
+      working-directory: aflplusplus-0.0
+      run: |
+        debmake
+
+    - name: Customize Source Package
+      working-directory: aflplusplus-0.0
+      run: |
+        echo override_dh_auto_build:     \
+        |   tee -a debian/rules          \
+        &&  echo "\t\$(MAKE) distrib"    \
+        |   tee -a debian/rules
+
+        sed -i 's@gcj,@@' debian/control
+
+        # TODO rename .deb package
+        # TODO conflicts with original packages -- afl++/aflplusplus, etc.
+
+    - name: Run dch
+      working-directory: aflplusplus-0.0
+      run: |
+        dch -n initial
+
+    - name: Build aflplusplus .deb
+      working-directory: aflplusplus-0.0
+      run: |
+        DEB_BUILD_OPTIONS=nocheck                      \
+        debuild                                                 \
+        --no-lintian                                            \
+        --preserve-envvar AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES \
+        --preserve-envvar AFL_SKIP_CPUFREQ                      \
+        --preserve-envvar AFL_TRY_AFFINITY                      \
+        --preserve-envvar CC                                    \
+        --preserve-envvar CXX                                   \
+        --preserve-envvar IS_DOCKER                             \
+        --preserve-envvar LLVM_CONFIG                           \
+        --preserve-envvar NO_ARCH_OPT                           \
+        --preserve-envvar NO_CORESIGHT                          \
+        --preserve-envvar NO_NYX                                \
+        -b -i -uc -us
+
+    # TODO
+
+    - name: Bump version and push tag
+      id:   tag_version
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        fail_on_unmatched_files: true
+        generate_release_notes: true
+        files: |
+          slapd_*.*.*+dfsg-*ubuntu*.*.*.*_amd64.deb
+          libldap-*.*-*_*.*.*+dfsg-*ubuntu*.*.*.*_amd64.deb
+          libldap-common_*.*.*+dfsg-*ubuntu*.*.*.*_all.deb
+
